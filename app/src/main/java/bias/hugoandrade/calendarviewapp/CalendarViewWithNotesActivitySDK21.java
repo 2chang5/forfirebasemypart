@@ -64,13 +64,14 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
     private ListenerRegistration listenerUsers;
     private FirebaseFirestore Firestore= FirebaseFirestore.getInstance();
     private static int shape;
-    private List<CALENDAR> sorted_CALENDARList = new ArrayList<>();
+//    private List<CALENDAR> sorted_CALENDARList = new ArrayList<>();
     private CalendarView.CalendarPagerAdapter calendarPagerAdapter;
     private USER user = new USER();
     private String CurrentUid;
     private FirebaseUser CurrentUser;
     private int DataYear = 0;
     private int DataMonth = 0;
+    private List<String> Check_Month_Visited_List = new ArrayList<>();
 
 
 
@@ -86,10 +87,11 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
 
         CurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         CurrentUid =CurrentUser.getUid();
+        Log.d("asddddd","CurrentUid : " + CurrentUid);
         getUserModel(CurrentUid);
 
-        mShortMonths = new DateFormatSymbols().getShortMonths();
-        initializeUI();
+
+
 
     }
 
@@ -111,6 +113,8 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         mCalendarView = findViewById(R.id.calendarView);
         mCalendarView.setOnMonthChangedListener(new CalendarView.OnMonthChangedListener() {
             @Override
@@ -118,18 +122,83 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
                 if (getSupportActionBar() != null) {
 
                     DataYear = year;
-                    DataMonth = month;
+                    DataMonth = month+1;
                     Log.d("asdddd","DataYear : " + DataYear);
-                    Log.d("asdddd","DataMonth : " + DataMonth);
+                    Log.d("asddddd","DataMonth22 : " + DataMonth);
                     getSupportActionBar().setTitle(mShortMonths[month]);
                     getSupportActionBar().setSubtitle(Integer.toString(year));
+
+                    String Gender = user.getUSER_Gender() == 0 ? "CALENDAR_GIRL" : "CALENDAR_MAN";
+                    String O_Gender = user.getUSER_Gender() == 0 ? "CALENDAR_MAN" : "CALENDAR_GIRL";
+                    listenerUsers = Firestore.collection("CALENDAR").document(user.getUSER_CoupleUID()).collection(O_Gender).document(DataYear + "_" + DataMonth).collection(DataYear + "_" + DataMonth)
+                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value,
+                                                    @Nullable FirebaseFirestoreException e) {
+                                    if (e != null) { return; }
+                                    Toast.makeText(getApplicationContext(), "달 이동함(상대방 리스너)", Toast.LENGTH_LONG).show();
+                                    int check = 0;
+                                    List<CALENDAR> new_O_User_Calendar_List= new ArrayList<>();
+                                    for (QueryDocumentSnapshot doc : value) {
+                                        CALENDAR CALENDAR = create_event_firebase(doc);//민규가 만든 파이어베이스에서 정보 받아온걸로 이벤트 파이어베이스모델에 넣는 함수
+                                        for(int i=0;i<mEventList.size();i++){
+                                            if(mEventList.get(i).getCALENDAR_UID().equals(CALENDAR.getCALENDAR_UID())){
+                                                check = 1;
+                                                break;
+                                            }
+                                        }if(check == 0){
+                                            new_O_User_Calendar_List.add(CALENDAR);
+                                        }check = 0;
+                                    }
+                                    if(new_O_User_Calendar_List.size() != 0){
+                                        for(int i=0;i<new_O_User_Calendar_List.size();i++){
+                                            Insert_Calendar(convert_event(new_O_User_Calendar_List.get(i)));
+                                        }
+                                        mCalendarDialog.setEventList(mEventList);
+                                    }
+                                }
+                            });
+
+
+                    int check_month_visited = 0;
+                    for(int i = 0 ; i < Check_Month_Visited_List.size() ; i++){
+                        Log.d("zxc","Check_Month_Visited_List : " + Check_Month_Visited_List);
+                        if(Check_Month_Visited_List.get(i).equals(DataYear + "_" + DataMonth)){
+                            check_month_visited = 0;
+                            break;
+                        }else{
+                            check_month_visited = 1;
+                        }
+                    }
+                    if (check_month_visited == 1) {
+
+                        CollectionReference collectionReference_girl = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection(Gender).document(DataYear + "_" + DataMonth).collection(DataYear + "_" + DataMonth);                // 파이어베이스의 posts에서
+                            collectionReference_girl.get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                List<CALENDAR> sorted_CALENDARList = new ArrayList<>();
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    CALENDAR CALENDAR = create_event_firebase(document);
+                                                    sorted_CALENDARList.add(CALENDAR);
+                                                }
+                                                Collections.sort(sorted_CALENDARList);
+                                                for(int i = 0; i< sorted_CALENDARList.size() ; i++){
+                                                    Insert_Calendar(convert_event(sorted_CALENDARList.get(i)));
+                                                }
+                                                mCalendarDialog.setEventList(mEventList);
+                                            }
+                                        }
+                                    });
+                            Check_Month_Visited_List.add(DataYear + "_" + DataMonth);
+                    }
+
+                    Log.d("zxc","Check_Month_Visited_List 222 : " + Check_Month_Visited_List);
 
                 }
             }
         });
-
-        /*로그인 해서 들어왔을 때*/
-        //From_Login();
 
         /* 달력에서 일정의 유무에 다른 날짜 클릭 리스너*/
         mCalendarView.setOnItemClickedListener(new CalendarView.OnItemClickListener() {
@@ -149,12 +218,19 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
             }
         });
 
+        DataMonth = mCalendarView.getCurrentDate().get(Calendar.MONTH)+1;
+        DataYear = mCalendarView.getCurrentDate().get(Calendar.YEAR);
+
+        From_Login();
+
+        Log.d("asddddd","DataMonth : " + DataMonth);
         /* 달력에서 일정의 유무에 다른 날짜 클릭 리스너*/
         mCalendarView.setOnItemTouchedListener(new CalendarView.OnItemTouchListener() {
             @Override
             public void onItemTouched(String title, int count, Calendar selectedDate, Calendar startDate, String Uid) {
 
-                CollectionReference collectionReference_man = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection("CALENDAR_MAN").document("202103").collection("202103");                // 파이어베이스의 posts에서
+                String Gender = user.getUSER_Gender() == 0 ? "CALENDAR_GIRL" : "CALENDAR_MAN";
+                CollectionReference collectionReference_man = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection(Gender).document(DataYear + "_" + DataMonth).collection(DataYear + "_" + DataMonth);                // 파이어베이스의 posts에서
                 collectionReference_man.whereEqualTo("CALENDAR_UID",Uid).get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -168,8 +244,8 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
                                 }
                                 FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
                                 final DocumentReference Calendar_Docu =firebaseFirestore.collection("CALENDAR").document(user.getUSER_CoupleUID());
-                                final DocumentReference Gender_Docu = Calendar_Docu.collection("CALENDAR_MAN").document("202103");
-                                final DocumentReference documentReference =Gender_Docu.collection("202103").document(Uid);
+                                final DocumentReference Gender_Docu = Calendar_Docu.collection(Gender).document(DataYear + "_" + DataMonth);
+                                final DocumentReference documentReference =Gender_Docu.collection(DataYear + "_" + DataMonth).document(Uid);
 
                                 Calendar endDate = YMDCalendar.toCalendar(new YMDCalendar(selectedDate.get(Calendar.DATE)+count-1,selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.YEAR)));
 
@@ -207,40 +283,6 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
                         });
             }
         });
-
-        /////////*일정 나열*/
-        String s_year;
-
-        listenerUsers = Firestore.collection("CALENDAR").document(user.getUSER_CoupleUID()).collection("CALENDAR_GIRL").document(DataYear + "_" + DataMonth).collection(DataYear + "_" + DataMonth)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) { return; }
-                        Toast.makeText(getApplicationContext(), "abcdefg", Toast.LENGTH_LONG).show();
-                        int check = 0;
-                        CALENDAR new_eventF = null;
-                        for (QueryDocumentSnapshot doc : value) {
-                            CALENDAR CALENDAR = create_event_firebase(doc);//민규가 만든 파이어베이스에서 정보 받아온걸로 이벤트 파이어베이스모델에 넣는 함수
-                            for(int i=0;i<mEventList.size();i++){
-                                if(mEventList.get(i).getCALENDAR_UID().equals(CALENDAR.getCALENDAR_UID())){
-                                    break;
-                                }
-                                if(i == mEventList.size()-1){
-                                    check = 1;
-                                    new_eventF = CALENDAR;
-                                }
-                            }
-                            break;
-                        }
-                        if(new_eventF != null){
-                            Insert_Calendar(convert_event(new_eventF));
-                            mCalendarDialog.setEventList(mEventList);
-                            Log.d("asddd","eventeventeventeventeventeventevent : ");
-                            Toast.makeText(getApplicationContext(), "새로운 일정이 완료되었었다", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
 
         /* 상단바 */
         if (getSupportActionBar() != null) {
@@ -345,7 +387,6 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
                 int Create_action = Create_Schadule.extractActionFromIntent(data);
                 Event Create_event = Create_Schadule.extractEventFromIntent(data);
 
-                Log.d("asdasdasd","event : " + Create_event);
                 switch (Create_action) {
                     case Create_Schadule.ACTION_CREATE: {
                         Insert_Calendar(Create_event);
@@ -384,22 +425,6 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
 //                        }
                         break;
                     }
-//                    case CreateEventActivity.ACTION_DELETE: {
-//                        ArrayList<Event> oldEvent = new ArrayList<>();
-//                        for (Event e : mEventList) {
-//                            if (Objects.equals(event.getCALENDAR_UID(), e.getCALENDAR_UID())) {
-//                                oldEvent.add(e);
-//                            }
-//                        }
-//                        int count = oldEvent.size();
-//                        for(int i = 0; i < count ; i++){
-//                            mEventList.remove(oldEvent.get(i));
-//                            mCalendarView.removeCalendarObjectByID(parseCalendarObject(oldEvent.get(i)));
-//                        }
-//                        mCalendarDialog.setEventList(mEventList);
-//
-//                        break;
-//                    }
                 }
             }else if (resultCode == DragCreate_Schedule.RESULT_DRAG) {
                 int Drag_action = DragCreate_Schedule.extractActionFromIntent(data);
@@ -547,13 +572,15 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
     void From_Login(){
         int logincheck = getIntent().getIntExtra("MOVE_FROM_LOGIN_REQUEST_CODE",0);
         //if(MOVE_FROM_LOGIN_REQUEST_CODE == logincheck){
-        CollectionReference collectionReference_man = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection("CALENDAR_MAN").document("202103").collection("202103");                // 파이어베이스의 posts에서
-        collectionReference_man.orderBy("CALENDAR_StartD", Query.Direction.ASCENDING).get()
+        Check_Month_Visited_List.add(DataYear + "_" + DataMonth);
+        Log.d("zxc","Check_Month_Visited_List0000 : " + Check_Month_Visited_List);
+        CollectionReference collectionReference_man = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection("CALENDAR_MAN").document(DataYear + "_" + DataMonth).collection(DataYear + "_" + DataMonth);                // 파이어베이스의 posts에서
+        collectionReference_man.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
+                            List<CALENDAR> sorted_CALENDARList = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 CALENDAR CALENDAR = create_event_firebase(document);
                                 sorted_CALENDARList.add(CALENDAR);
@@ -566,13 +593,13 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
                         }
                     }
                 });
-        CollectionReference collectionReference_girl = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection("CALENDAR_GIRL").document("202103").collection("202103");                // 파이어베이스의 posts에서
-        collectionReference_girl.orderBy("CALENDAR_StartD", Query.Direction.ASCENDING).get()
+        CollectionReference collectionReference_girl = FirebaseFirestore.getInstance().collection("CALENDAR").document(user.getUSER_CoupleUID()).collection("CALENDAR_GIRL").document(DataYear + "_" + DataMonth).collection(DataYear + "_" + DataMonth);                // 파이어베이스의 posts에서
+        collectionReference_girl.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
+                            List<CALENDAR> sorted_CALENDARList = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 CALENDAR CALENDAR = create_event_firebase(document);
                                 sorted_CALENDARList.add(CALENDAR);
@@ -602,12 +629,15 @@ public class CalendarViewWithNotesActivitySDK21 extends AppCompatActivity  {
                             test =  document.toObject(USER.class);
                             user = new USER(test.getUSER_Name(),test.getUSER_Gender(),test.getUSER_NickName(),test.getUSER_BirthY()
                                     ,test.getUSER_BirthM(),test.getUSER_BirthD(),test.getUSER_CoupleUID(),test.getUSER_UID(),test.getUSER_Level());
+                            Log.d("asddddd","user.getUSER_CoupleUID()2222 : " + user.getUSER_CoupleUID());
+
+                            mShortMonths = new DateFormatSymbols().getShortMonths();
+                            initializeUI();
                         }
                     }
                 }
             }
         });
-        return;
     }
 
 }
