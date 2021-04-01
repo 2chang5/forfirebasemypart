@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
         rvOptions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         OptionsAdapter adapter = new OptionsAdapter(
-                new Option("CalendarView with notes", "Add notes to the calendar view")
+                new Option("CalendarView with notes", "Add notes to the calendar view"),
+                new Option("diary 가즈아","가즈아")
         );
         adapter.setOnClickListener(new OptionsAdapter.OnClickListener() {
             @Override
@@ -111,6 +112,14 @@ public class MainActivity extends AppCompatActivity {
                             //startActivity(CalendarViewWithNotesActivity.makeIntent(context));
                         }
                         break;
+                    case 1:
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            startActivity(GoToDiary.makeIntent(context));
+                        }
+                        else {
+                            //startActivity(CalendarViewWithNotesActivity.makeIntent(context));
+                        }
                 }
             }
         });

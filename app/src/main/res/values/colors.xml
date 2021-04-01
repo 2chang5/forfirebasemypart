@@ -14,4 +14,7 @@
     <color name="M_Malang">#c49b7c</color>
     <color name="M_Malang_shadow">#f0e2d8</color>
     <color name="M_Spinner_background">#dfcec7</color>
+
+    <color name="spotlightBackground">#F8EFBA</color>
+    <color name="allBackground">#F3F2F1</color>
 </resources>

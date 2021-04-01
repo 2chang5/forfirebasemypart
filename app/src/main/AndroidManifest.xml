@@ -29,6 +29,29 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+        <!--        창환추가-->
+        <activity
+            android:name="bias.hugoandrade.calendarviewapp.GoToDiary"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name="bias.hugoandrade.calendarviewapp.DiaryActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name="bias.hugoandrade.calendarviewapp.PhotoViewer"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name="bias.hugoandrade.calendarviewapp.FinishDiary"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+
+        <!--        여기까지-->
         <activity
             android:name="bias.hugoandrade.calendarviewapp.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -109,6 +132,21 @@
         </activity>
         <activity android:name="bias.hugoandrade.calendarviewapp.MemberInitActivity" android:screenOrientation="portrait">
         </activity>
+        <!--창환추가-->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="lv.chi.real.fileproviderforunion"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

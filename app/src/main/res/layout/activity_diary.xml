@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coverlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F2F1"
+    android:orientation="vertical"
+    tools:context=".DiaryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/xButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/forx" />
+
+            <Space
+                android:layout_width="250dp"
+                android:layout_height="30dp" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                app:lottie_autoPlay="false"
+                app:lottie_fileName="real_finish_jelly.json"
+                app:lottie_loop="false" />
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <ScrollView
+            android:id="@+id/diaryScrollCard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/for_diary_card1"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/diaryDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/binggraesamancobold"
+                    android:text="Texttext"
+                    android:textColor="#B9B9B9"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/whoJelly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/binggraesamancobold"
+                    android:text="TextView"
+                    android:textColor="#B9B9B9"
+                    android:textSize="20dp" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/picture_x_button"
+                            style="@style/Widget.AppCompat.Button.Small"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/picture_x"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/picture_view"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="7dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/for_picture"
+                            android:visibility="gone"
+                            tools:srcCompat="null" />
+                    </FrameLayout>
+
+                    <Space
+                        android:id="@+id/picture_space"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/mainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:ems="10"
+                        android:fontFamily="@font/binggraesamancobold"
+                        android:gravity="start|top"
+                        android:hint="오늘의 일기를 작성해 주세요"
+                        android:inputType="textMultiLine"
+                        android:textColor="#B9B9B9"
+                        android:textColorHint="#B9B9B9"
+                        android:textSize="35dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/keyBoardbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/for_keyboard_bar_1"
+        android:orientation="horizontal"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/selectPic"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/plus_pic" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/selectTime"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pius_time" />
+
+        <Button
+            android:id="@+id/button10"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button11"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>
