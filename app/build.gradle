@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+//코틀린 혼용
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
@@ -21,6 +25,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    
+    //코틀린 혼용
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -76,4 +86,7 @@ dependencies {
 
     //로티
     implementation "com.airbnb.android:lottie:3.6.1"
+
+    //코틀린 혼용
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
