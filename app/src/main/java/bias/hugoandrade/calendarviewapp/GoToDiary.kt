@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -39,6 +40,7 @@ class GoToDiary : AppCompatActivity() {
     private var couple = COUPLE()
     var diary_level : Int? = null
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +57,7 @@ class GoToDiary : AppCompatActivity() {
         //유저 정보 받아옴 파이어스토어에 있는거 user 객체에 저장
         getUserModel(Current_Uid)
 
-        //다이어리 DIARY MAN/WOMEN 까지 만들기
+
 
         //몇번째 일기(젤리) 인지 파이어베이스 에서 받아오기
         getCoupleJellyModel(user.useR_CoupleUID)
@@ -195,6 +197,7 @@ class GoToDiary : AppCompatActivity() {
                 intent.putExtra("emotion", 1)
                 intent.putExtra("diary_level",diary_level)
                 intent.putExtra("user_name",user.useR_Name)
+                intent.putExtra("USER_CoupleUID",user.useR_CoupleUID)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -255,6 +258,7 @@ class GoToDiary : AppCompatActivity() {
                 intent.putExtra("emotion", 2)
                 intent.putExtra("diary_level",diary_level)
                 intent.putExtra("user_name",user.useR_Name)
+                intent.putExtra("USER_CoupleUID",user.useR_CoupleUID)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -315,6 +319,7 @@ class GoToDiary : AppCompatActivity() {
                 intent.putExtra("emotion", 3)
                 intent.putExtra("diary_level",diary_level)
                 intent.putExtra("user_name",user.useR_Name)
+                intent.putExtra("USER_CoupleUID",user.useR_CoupleUID)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -376,6 +381,7 @@ class GoToDiary : AppCompatActivity() {
                 intent.putExtra("emotion", 4)
                 intent.putExtra("diary_level",diary_level)
                 intent.putExtra("user_name",user.useR_Name)
+                intent.putExtra("USER_CoupleUID",user.useR_CoupleUID)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -434,6 +440,7 @@ class GoToDiary : AppCompatActivity() {
                 intent.putExtra("emotion", 5)
                 intent.putExtra("diary_level",diary_level)
                 intent.putExtra("user_name",user.useR_Name)
+                intent.putExtra("USER_CoupleUID",user.useR_CoupleUID)
                 startActivity(intent)
                 spotlight.finish()
             }

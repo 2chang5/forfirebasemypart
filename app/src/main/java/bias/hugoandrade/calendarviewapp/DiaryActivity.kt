@@ -40,6 +40,8 @@ class DiaryActivity : AppCompatActivity(), PhotoPickerFragment.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diary)
 
+
+
         //최초 이미지uri 변수 비우기
         picture_uri = null
 
@@ -165,11 +167,14 @@ class DiaryActivity : AppCompatActivity(), PhotoPickerFragment.Callback {
         //텍스트 박스 포커스 조절(키보드바 라이브러리에서 자동처리되었음)
 
 
-        //일기 내용 파이어스토어에 쳐넣기
+
 
 
         //일기작성완료
         saveButton.setOnClickListener{
+            //일기 내용 파이어스토어에 쳐넣기
+
+
             //로티 재생
             val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(1300)
             animator.addUpdateListener {
