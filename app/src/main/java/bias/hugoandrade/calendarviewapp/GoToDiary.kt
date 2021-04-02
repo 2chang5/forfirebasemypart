@@ -441,6 +441,7 @@ class GoToDiary : AppCompatActivity() {
                 intent.putExtra("diary_level",diary_level)
                 intent.putExtra("user_name",user.useR_Name)
                 intent.putExtra("USER_CoupleUID",user.useR_CoupleUID)
+                intent.putExtra("gender",user.useR_Gender)
                 startActivity(intent)
                 spotlight.finish()
             }
