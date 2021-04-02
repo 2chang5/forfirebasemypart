@@ -12,6 +12,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import bias.hugoandrade.calendarviewapp.data.COUPLE
 import bias.hugoandrade.calendarviewapp.data.USER
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
+import kotlinx.android.synthetic.main.activity_diary.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.forspotlight.*
 import kotlinx.android.synthetic.main.gotodiary.*
@@ -34,6 +36,8 @@ class GoToDiary : AppCompatActivity() {
     var plusState : Boolean = false
 
     private var user = USER()
+    private var couple = COUPLE()
+    var diary_level : Int? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +52,18 @@ class GoToDiary : AppCompatActivity() {
         // 현재 유저에 대한 파이어베이스 auth 정보
         val CurrentUser : FirebaseUser = FirebaseAuth.getInstance().currentUser
         val Current_Uid : String = CurrentUser.uid
+        //유저 정보 받아옴 파이어스토어에 있는거 user 객체에 저장
         getUserModel(Current_Uid)
+
+        //다이어리 DIARY MAN/WOMEN 까지 만들기
+
+        //몇번째 일기(젤리) 인지 파이어베이스 에서 받아오기
+        getCoupleJellyModel(user.useR_CoupleUID)
+        if (user.useR_Gender == 1){
+            diary_level =  couple.couplE_LEVEL_MAN
+        }else if (user.useR_Gender == 0){
+            diary_level =  couple.couplE_LEVEL_GIRL
+        }
 
 
         //플러스 로티
@@ -417,33 +432,41 @@ class GoToDiary : AppCompatActivity() {
 
         }
 
-        //파이어스토어 시작
-        //유저 정보 가져오기
-
-
-
-
-
-
-
-
     }
 
     //파이어스토어 정보 가져오기 민규 오리진
     fun getUserModel(Current_Uid: String?) {
         //이거 원래코드  var documentReference : DocumentReference = FirebaseFirestore.getInstance().collection("USER").document(Current_Uid) 이건데 let으로 오류 잡은거
-        var documentReference : DocumentReference? = Current_Uid?.let { FirebaseFirestore.getInstance().collection("USER").document(it) }
+        var documentReference : DocumentReference? = Current_Uid?.let { firestore?.collection("USER")?.document(it) }
         if (documentReference != null) {
             documentReference.get()
                     .addOnSuccessListener { document ->
                         if (document != null) {
-                            var test: USER? = USER()
-                            test = document.toObject(USER::class.java)
-                            user = USER(test!!.useR_Name, test.useR_Gender, test.useR_NickName, test.useR_BirthY, test.useR_BirthM, test.useR_BirthD, test.useR_CoupleUID, test.useR_UID, test.useR_Level)
+                            var testuser: USER? = USER()
+                            testuser = document.toObject(USER::class.java)
+                            user = USER(testuser!!.useR_Name, testuser.useR_Gender, testuser.useR_NickName, testuser.useR_BirthY, testuser.useR_BirthM, testuser.useR_BirthD, testuser.useR_CoupleUID, testuser.useR_UID, testuser.useR_Level)
                         }
                     }
         }
     }
+
+    //커플 일기수 (젤리수) 가져오기
+    fun getCoupleJellyModel(Couple_UID: String?) {
+        var documentReference : DocumentReference? = Couple_UID?.let { firestore?.collection("COUPLE")?.document(it) }
+        if (documentReference != null) {
+            documentReference.get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            var testcouple: COUPLE? = COUPLE()
+                            testcouple = document.toObject(COUPLE::class.java)
+                            if (testcouple != null) {
+                                couple = COUPLE(testcouple.couplE_LEVEL_MAN,testcouple.couplE_LEVEL_GIRL)
+                            }
+                        }
+                    }
+        }
+    }
+
 
     companion object {
         @JvmStatic

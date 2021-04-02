@@ -42,6 +42,12 @@ public class COUPLE implements Serializable {
         this.COUPLE_LEVEL_MAN = COUPLE_LEVEL_MAN;
         this.COUPLE_LEVEL_GIRL = COUPLE_LEVEL_GIRL;
     }
+    //일기 갯수만 받아오기
+    public COUPLE( int COUPLE_LEVEL_MAN,int COUPLE_LEVEL_GIRL){
+
+        this.COUPLE_LEVEL_MAN = COUPLE_LEVEL_MAN;
+        this.COUPLE_LEVEL_GIRL = COUPLE_LEVEL_GIRL;
+    }
 
     public Map<String, Object> getCoupleInfo(){
         Map<String, Object> docData = new HashMap<>();
