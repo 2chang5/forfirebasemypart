@@ -6,11 +6,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import bias.hugoandrade.calendarviewapp.data.USER
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
@@ -28,13 +33,23 @@ class GoToDiary : AppCompatActivity() {
     var firestore : FirebaseFirestore? = null
     var plusState : Boolean = false
 
+    private var user = USER()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.gotodiary)
 
+
         //파이어스토어 인스턴스 초기화
         firestore = FirebaseFirestore.getInstance()
+
+
+        // 현재 유저에 대한 파이어베이스 auth 정보
+        val CurrentUser : FirebaseUser = FirebaseAuth.getInstance().currentUser
+        val Current_Uid : String = CurrentUser.uid
+        getUserModel(Current_Uid)
+
 
         //플러스 로티
         plusState =  false
@@ -161,7 +176,7 @@ class GoToDiary : AppCompatActivity() {
 
             //다이어리로 넘어가기
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
-                intent.putExtra("nowDate",formatted)
+                intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 1)
                 startActivity(intent)
                 spotlight.finish()
@@ -219,7 +234,7 @@ class GoToDiary : AppCompatActivity() {
 
             //다이어리로 넘어가기
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
-                intent.putExtra("nowDate",formatted)
+                intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 2)
                 startActivity(intent)
                 spotlight.finish()
@@ -277,7 +292,7 @@ class GoToDiary : AppCompatActivity() {
 
             //다이어리로 넘어가기
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
-                intent.putExtra("nowDate",formatted)
+                intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 3)
                 startActivity(intent)
                 spotlight.finish()
@@ -336,7 +351,7 @@ class GoToDiary : AppCompatActivity() {
 
 //            //다이어리로 넘어가기
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
-                intent.putExtra("nowDate",formatted)
+                intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 4)
                 startActivity(intent)
                 spotlight.finish()
@@ -392,7 +407,7 @@ class GoToDiary : AppCompatActivity() {
 
             //다이어리로 넘어가기
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
-                intent.putExtra("nowDate",formatted)
+                intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 5)
                 startActivity(intent)
                 spotlight.finish()
@@ -402,12 +417,33 @@ class GoToDiary : AppCompatActivity() {
 
         }
 
-        //파이어베이스 디렉토리 추가
-//        var couple_UID = firestore!!.collection("COUPLE").document("w77CJ9YxnL8XW1cFms4T").collection("CALENDAR_GIRL").document().id
-//        Log.i("파이어스토어",couple_UID)
-//        firestore!!.collection("DIARY").document()
+        //파이어스토어 시작
+        //유저 정보 가져오기
+
+
+
+
+
+
+
+
     }
 
+    //파이어스토어 정보 가져오기 민규 오리진
+    fun getUserModel(Current_Uid: String?) {
+        //이거 원래코드  var documentReference : DocumentReference = FirebaseFirestore.getInstance().collection("USER").document(Current_Uid) 이건데 let으로 오류 잡은거
+        var documentReference : DocumentReference? = Current_Uid?.let { FirebaseFirestore.getInstance().collection("USER").document(it) }
+        if (documentReference != null) {
+            documentReference.get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            var test: USER? = USER()
+                            test = document.toObject(USER::class.java)
+                            user = USER(test!!.useR_Name, test.useR_Gender, test.useR_NickName, test.useR_BirthY, test.useR_BirthM, test.useR_BirthD, test.useR_CoupleUID, test.useR_UID, test.useR_Level)
+                        }
+                    }
+        }
+    }
 
     companion object {
         @JvmStatic
