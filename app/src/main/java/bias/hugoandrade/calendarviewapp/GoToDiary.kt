@@ -193,6 +193,8 @@ class GoToDiary : AppCompatActivity() {
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
                 intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 1)
+                intent.putExtra("diary_level",diary_level)
+                intent.putExtra("user_name",user.useR_Name)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -251,6 +253,8 @@ class GoToDiary : AppCompatActivity() {
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
                 intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 2)
+                intent.putExtra("diary_level",diary_level)
+                intent.putExtra("user_name",user.useR_Name)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -309,6 +313,8 @@ class GoToDiary : AppCompatActivity() {
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
                 intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 3)
+                intent.putExtra("diary_level",diary_level)
+                intent.putExtra("user_name",user.useR_Name)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -368,6 +374,8 @@ class GoToDiary : AppCompatActivity() {
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
                 intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 4)
+                intent.putExtra("diary_level",diary_level)
+                intent.putExtra("user_name",user.useR_Name)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -424,6 +432,8 @@ class GoToDiary : AppCompatActivity() {
             val goToDiary= View.OnClickListener { val intent = Intent(this, DiaryActivity::class.java)
                 intent.putExtra("nowDate", formatted)
                 intent.putExtra("emotion", 5)
+                intent.putExtra("diary_level",diary_level)
+                intent.putExtra("user_name",user.useR_Name)
                 startActivity(intent)
                 spotlight.finish()
             }
@@ -466,6 +476,7 @@ class GoToDiary : AppCompatActivity() {
                     }
         }
     }
+
 
 
     companion object {

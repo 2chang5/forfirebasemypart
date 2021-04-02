@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.view.View.OnTouchListener
@@ -14,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import bias.hugoandrade.calendarviewapp.data.USER
 import com.bumptech.glide.Glide
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_diary.*
@@ -117,7 +119,13 @@ class DiaryActivity : AppCompatActivity(), PhotoPickerFragment.Callback {
 
 
         //누구의 몇번째 젤리표시
-        // 파이어스토어에 있는거 꺼내와서 출력
+        val diary_level =  intent.getIntExtra("diary_level", 1)
+        val user_name = intent.getStringExtra("user_name")
+
+        whoJelly.text = "${user_name}님의 ${diary_level}번째 젤리"
+
+
+
 
 
         //이미지 넣기
